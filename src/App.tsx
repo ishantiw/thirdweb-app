@@ -1,5 +1,7 @@
+
 import thirdwebIcon from "./thirdweb.svg";
 import { handleLogin, preLogin } from "./wallet";
+import { liskSepolia } from "./lisk_network";
 
 export function App() {
 	return (
@@ -119,8 +121,17 @@ function EcosystemLogin() {
 								if (accountLabel) {
 									accountLabel.hidden = false;
 									accountLabel.innerHTML = `Connected Account: <b>${account.address}</b>`;
+									// Connected Account: Failed to sign typed data - 401
+									const signedMessage = await account.signMessage({
+										message: {
+											raw: "0x1111"
+										},
+										chainId: liskSepolia.id,
+									});
+									console.log("signedMessage =>", signedMessage);
 								}
 							} catch (error: any) {
+								console.error("Error during login:", error);
 								const accountLabel = document.getElementById("accountLabel") as HTMLDivElement | null;
 								if (accountLabel) {
 									accountLabel.hidden = false;

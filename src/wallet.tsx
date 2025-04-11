@@ -29,8 +29,10 @@ export const preLogin = async (email: string, isEcosystemWallet=false): Promise<
             return error
         }).then(() => {
             console.log("preAuthenticate completed");
-            return null;
+            return undefined;
         });
+
+        return undefined;
     }
 
     // Normal wallet
