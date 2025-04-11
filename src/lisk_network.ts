@@ -25,5 +25,5 @@ export const liskSepolia = defineChain({
     },
   ],
   chainId: 4202,
-  slug: "lisk",
+  slug: "liskSepolia",
 });

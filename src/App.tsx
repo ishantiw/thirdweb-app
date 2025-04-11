@@ -1,20 +1,77 @@
 
-import thirdwebIcon from "./thirdweb.svg";
-import { handleLogin, preLogin } from "./wallet";
+import liskIcon from "./lisk.svg";
+import { handleLogin, liskEcosystemWallet, preLogin } from "./wallet";
 import { liskSepolia } from "./lisk_network";
+import { ConnectButton, TransactionButton } from "thirdweb/react";
+import { client } from "./client";
+import { getContract, prepareContractCall, toUnits } from "thirdweb";
+import lskIcon from './lsk.svg'
 
+const lsk_coin = getContract({
+	address: "0x8a21CF9Ba08Ae709D64Cb25AfAA951183EC9FF6D",
+	chain: liskSepolia,
+	client: client,
+  });
+  
+  const wallets = [
+	liskEcosystemWallet(),
+  ]
 export function App() {
 	return (
 		<main className="p-4 pb-10 min-h-[100vh] flex items-center justify-center container max-w-screen-lg mx-auto">
 			<div className="py-20">
 				<Header />
 
-				<EcosystemLogin />
-
-				<ThirdwebResources />
+				<ConnectButton
+					client={client}
+					wallets={wallets}
+					theme={"dark"}
+					connectModal={{ size: "wide" }}
+					connectButton={{ label: "Connect your wallet" }}
+					supportedTokens={{
+						"4202": [
+						  {
+							address: "0x8a21CF9Ba08Ae709D64Cb25AfAA951183EC9FF6D",
+							name: "Lisk",
+							symbol: "LSK",
+							icon: lskIcon,
+						  },
+						],
+					  }}
+					
+					accountAbstraction={{
+						chain: liskSepolia, // replace with the chain you want
+						sponsorGas: true,
+					  }}
+				>
+				</ConnectButton>
 			</div>
 		</main>
 	);
+}
+
+function SendTransaction() {
+	return (
+		<div>
+		<div className="flex justify-center mb-20">
+			<text className="text-zinc-300 text-base">
+				Login with your email to get started
+			</text>
+		</div>
+	<TransactionButton
+		transaction={() =>
+			prepareContractCall({
+				contract: lsk_coin,
+				method:
+					"function transfer(address to, uint256 value) returns (bool)",
+				params: ["0x79B6252eE6233b8fCF5a6e4d386E74f8fC65314D", toUnits("1", 18)],
+			})
+		}
+	>
+		Send
+	</TransactionButton>
+	</div>
+	)
 }
 
 function EcosystemLogin() {
@@ -155,7 +212,7 @@ function Header() {
 	return (
 		<header className="flex flex-col items-center mb-20 md:mb-20">
 			<img
-				src={thirdwebIcon}
+				src={liskIcon}
 				alt=""
 				className="size-[150px] md:size-[150px]"
 				style={{
@@ -164,18 +221,10 @@ function Header() {
 			/>
 
 			<h1 className="text-2xl md:text-6xl font-bold tracking-tighter mb-6 text-zinc-100">
-				thirdweb SDK
+				Lisk Ecosystem Wallet using ThirdWeb
 				<span className="text-zinc-300 inline-block mx-1"> + </span>
 				<span className="inline-block -skew-x-6 text-violet-500"> vite </span>
 			</h1>
-
-			<p className="text-zinc-300 text-base">
-				Read the{" "}
-				<code className="bg-zinc-800 text-zinc-300 px-2 rounded py-1 text-sm mx-1">
-					README.md
-				</code>{" "}
-				file to get started.
-			</p>
 		</header>
 	);
 }

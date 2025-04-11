@@ -80,3 +80,11 @@ export const handleLogin = async (email: string, verificationCode: string, isEco
     return account;
 
 };
+
+export const liskEcosystemWallet = () => {
+    return ecosystemWallet(import.meta.env.VITE_ECOSYSTEM_ID as `ecosystem.${string}`,
+        {
+            partnerId: import.meta.env.VITE_PARTNER_ID,
+        }
+    );
+}
