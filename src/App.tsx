@@ -178,14 +178,17 @@ function EcosystemLogin() {
 								if (accountLabel) {
 									accountLabel.hidden = false;
 									accountLabel.innerHTML = `Connected Account: <b>${account.address}</b>`;
-									// Connected Account: Failed to sign typed data - 401
-									const signedMessage = await account.signMessage({
-										message: {
-											raw: "0x1111"
-										},
-										chainId: liskSepolia.id,
-									});
-									console.log("signedMessage =>", signedMessage);
+									try {
+										const signedMessage = await account.signMessage({
+											message: {
+												raw: "0x1111"
+											},
+											chainId: liskSepolia.id,
+										});
+										console.log("signedMessage =>", signedMessage);
+									} catch (error) {
+										console.error("Error signing message:", error);
+									}
 								}
 							} catch (error: any) {
 								console.error("Error during login:", error);
@@ -197,8 +200,7 @@ function EcosystemLogin() {
 							}
 
 						}
-					}
-					}
+					}}
 					id="loginButton"
 				>
 					Login with verification code
