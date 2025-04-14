@@ -1,4 +1,3 @@
-
 import liskIcon from "./lisk.svg";
 import { handleLogin, liskEcosystemWallet, preLogin } from "./wallet";
 import { liskSepolia } from "./lisk_network";
@@ -6,6 +5,8 @@ import { ConnectButton, TransactionButton } from "thirdweb/react";
 import { client } from "./client";
 import { getContract, prepareContractCall, toUnits } from "thirdweb";
 import lskIcon from './lsk.svg'
+import { useState } from "react";
+import { AdminSection } from "./components/AdminSection";
 
 const lsk_coin = getContract({
 	address: "0x8a21CF9Ba08Ae709D64Cb25AfAA951183EC9FF6D",
@@ -17,34 +18,49 @@ const lsk_coin = getContract({
 	liskEcosystemWallet(),
   ]
 export function App() {
+	const [showAdmin, setShowAdmin] = useState(false);
+
 	return (
 		<main className="p-4 pb-10 min-h-[100vh] flex items-center justify-center container max-w-screen-lg mx-auto">
-			<div className="py-20">
+			<div className="py-20 w-full">
 				<Header />
 
-				<ConnectButton
-					client={client}
-					wallets={wallets}
-					theme={"dark"}
-					connectModal={{ size: "wide" }}
-					connectButton={{ label: "Connect your wallet" }}
-					supportedTokens={{
-						"4202": [
-						  {
-							address: "0x8a21CF9Ba08Ae709D64Cb25AfAA951183EC9FF6D",
-							name: "Lisk",
-							symbol: "LSK",
-							icon: lskIcon,
-						  },
-						],
-					  }}
-					
-					accountAbstraction={{
-						chain: liskSepolia, // replace with the chain you want
-						sponsorGas: true,
-					  }}
-				>
-				</ConnectButton>
+				<div className="flex justify-center mb-5">
+					<button 
+						className="bg-violet-500 text-white px-4 py-2 rounded-lg hover:bg-violet-600 transition-colors"
+						onClick={() => setShowAdmin(!showAdmin)}
+					>
+						{showAdmin ? "Hide Admin Panel" : "Show Admin Panel"}
+					</button>
+				</div>
+
+				{showAdmin ? (
+					<AdminSection />
+				) : (
+					<ConnectButton
+						client={client}
+						wallets={wallets}
+						theme={"dark"}
+						connectModal={{ size: "wide" }}
+						connectButton={{ label: "Connect your wallet" }}
+						supportedTokens={{
+							"4202": [
+							{
+								address: "0x8a21CF9Ba08Ae709D64Cb25AfAA951183EC9FF6D",
+								name: "Lisk",
+								symbol: "LSK",
+								icon: lskIcon,
+							},
+							],
+						}}
+						
+						accountAbstraction={{
+							chain: liskSepolia, // replace with the chain you want
+							sponsorGas: true,
+						}}
+					>
+					</ConnectButton>
+				)}
 			</div>
 		</main>
 	);
