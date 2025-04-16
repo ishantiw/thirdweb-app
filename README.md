@@ -1,4 +1,3 @@
-
 ![tw-banner](https://github.com/thirdweb-example/vite-starter/assets/57885104/cfe2164b-b50b-4d8e-aaaa-31331da2d647)
 
 # vite-starter
@@ -52,13 +51,32 @@ Preview the production build
 yarn preview
 ```
 
-## Additional Resources
+## Proxy Server for Thirdweb API
 
-- [Documentation](https://portal.thirdweb.com/typescript/v5)
-- [Templates](https://thirdweb.com/templates)
-- [YouTube](https://www.youtube.com/c/thirdweb)
-- [Blog](https://blog.thirdweb.com)
+This proxy server allows frontend application to communicate with the Thirdweb API without encountering CORS issues.
 
-## Need help?
+### Why is this needed?
 
-For help or feedback, please [visit our support site](https://thirdweb.com/support)
+When making direct API requests from a browser-based application to a different domain (like thirdweb.com), browsers enforce Cross-Origin Resource Sharing (CORS) restrictions. The Thirdweb API doesn't include the necessary CORS headers to allow direct requests from local development server.
+
+### How to use
+
+1. Start the proxy server:
+
+```bash
+yarn proxy-server
+```
+
+This will start the proxy server at http://localhost:3000.
+
+2. In frontend code, make requests to the proxy server instead of directly to Thirdweb:
+
+```typescript
+// Instead of making direct requests to thirdweb.com:
+axios.post('http://localhost:3000/api/create-project', data)
+```
+
+The proxy server will:
+- Handle authentication headers and cookies
+- Forward request to Thirdweb
+- Return the response to frontend application
