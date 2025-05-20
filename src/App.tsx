@@ -2,53 +2,47 @@
 import liskIcon from "./lisk.svg";
 import { handleLogin, liskEcosystemWallet, preLogin } from "./wallet";
 import { liskSepolia } from "./lisk_network";
-import { ConnectButton, TransactionButton } from "thirdweb/react";
-import { client } from "./client";
+import { AccountBalance, AccountName, AccountProvider, ConnectButton, getDefaultToken, PayEmbed, TransactionButton, useActiveAccount } from "thirdweb/react";
+import { FlowClient } from "./client";
 import { getContract, prepareContractCall, toUnits } from "thirdweb";
-import lskIcon from './lsk.svg'
+import { FlowConnect } from "./component/connect";
+import { FlowPay } from "./component/pay";
+import { useState } from "react";
 
 const lsk_coin = getContract({
 	address: "0x8a21CF9Ba08Ae709D64Cb25AfAA951183EC9FF6D",
 	chain: liskSepolia,
-	client: client,
+	client: FlowClient,
   });
   
-  const wallets = [
+  const mainwallets = [
 	liskEcosystemWallet(),
   ]
 export function App() {
+	const [wallets, setWallets] = useState(mainwallets);
+	const a = useActiveAccount()
 	return (
-		<main className="p-4 pb-10 min-h-[100vh] flex items-center justify-center container max-w-screen-lg mx-auto">
-			<div className="py-20">
-				<Header />
-
-				<ConnectButton
-					client={client}
-					wallets={wallets}
-					theme={"dark"}
-					connectModal={{ size: "wide" }}
-					connectButton={{ label: "Connect your wallet" }}
-					supportedTokens={{
-						"4202": [
-						  {
-							address: "0x8a21CF9Ba08Ae709D64Cb25AfAA951183EC9FF6D",
-							name: "Lisk",
-							symbol: "LSK",
-							icon: lskIcon,
-						  },
-						],
-					  }}
-					
-					accountAbstraction={{
-						chain: liskSepolia, // replace with the chain you want
-						sponsorGas: true,
-					  }}
-				>
-				</ConnectButton>
+		<main className="p-4 pb-10 min-h-[100vh] flex flex-col items-center justify-center container max-w-screen-lg mx-auto">
+			<div className="absolute top-0 right-0 p-4">
+				<FlowConnect wallets={wallets} />
+			</div>
+			<Header />
+			<div className="mt-10">
+				<FlowPay wallet={wallets[0]} />
 			</div>
 		</main>
 	);
 }
+
+
+
+
+
+
+
+
+
+
 
 function SendTransaction() {
 	return (
@@ -219,56 +213,9 @@ function Header() {
 					filter: "drop-shadow(0px 0px 24px #a726a9a8)",
 				}}
 			/>
-
-			<h1 className="text-2xl md:text-6xl font-bold tracking-tighter mb-6 text-zinc-100">
-				Lisk Ecosystem Wallet using ThirdWeb
-				<span className="text-zinc-300 inline-block mx-1"> + </span>
-				<span className="inline-block -skew-x-6 text-violet-500"> vite </span>
-			</h1>
+			<h3 className="text-2xl md:text-6xl font-bold tracking-tighter mb-6 text-zinc-100">
+				Gaming Application
+			</h3>
 		</header>
-	);
-}
-
-function ThirdwebResources() {
-	return (
-		<div className="grid gap-4 lg:grid-cols-3 justify-center">
-			<ArticleCard
-				title="thirdweb SDK Docs"
-				href="https://portal.thirdweb.com/typescript/v5"
-				description="thirdweb TypeScript SDK documentation"
-			/>
-
-			<ArticleCard
-				title="Components and Hooks"
-				href="https://portal.thirdweb.com/typescript/v5/react"
-				description="Learn about the thirdweb React components and hooks in thirdweb SDK"
-			/>
-
-			<ArticleCard
-				title="thirdweb Dashboard"
-				href="https://thirdweb.com/dashboard"
-				description="Deploy, configure, and manage your smart contracts from the dashboard."
-			/>
-		</div>
-	);
-}
-
-function ArticleCard(props: {
-	title: string;
-	href: string;
-	description: string;
-}) {
-	return (
-		<a
-			href={`${props.href}?utm_source=vite-template`}
-			target="_blank"
-			className="flex flex-col border border-zinc-800 p-4 rounded-lg hover:bg-zinc-900 transition-colors hover:border-zinc-700"
-			rel="noreferrer"
-		>
-			<article>
-				<h2 className="text-lg font-semibold mb-2">{props.title}</h2>
-				<p className="text-sm text-zinc-400">{props.description}</p>
-			</article>
-		</a>
 	);
 }

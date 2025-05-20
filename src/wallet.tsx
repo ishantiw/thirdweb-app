@@ -4,6 +4,7 @@ import {
     inAppWallet,
     Account,
 } from "thirdweb/wallets";
+
 import { client } from "./client";
 import { liskSepolia } from "./lisk_network";
 
@@ -17,6 +18,7 @@ export const preLogin = async (email: string, isEcosystemWallet=false): Promise<
         id: import.meta.env.VITE_ECOSYSTEM_ID as `ecosystem.${string}`,
         partnerId: import.meta.env.VITE_PARTNER_ID,
     }
+
     if (isEcosystemWallet) {
         console.log("ecosystemWallet is true");
         await preAuthenticate({
@@ -69,7 +71,9 @@ export const handleLogin = async (email: string, verificationCode: string, isEco
         return account;
     }
 
-    const ecoWallet = inAppWallet();
+    const ecoWallet = inAppWallet(
+        // {smartAccount: {chain: liskSepolia, sponsorGas: false }}
+    );
     const account = await ecoWallet.connect({
         client,
         strategy: "email",
